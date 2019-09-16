@@ -1,0 +1,101 @@
+<config xmlns="http://tail-f.com/ns/config/1.0">
+ <devices xmlns="http://tail-f.com/ns/ncs" tags="merge">
+  <device>
+    <name>{$DEVICE_NAME}</name>
+    <config>
+      <event xmlns="urn:ios">
+        <manager>
+          <applet>
+            <name>copyTFTP</name>
+            <event>
+              <timer>
+                <trigger>countdown</trigger>
+                <time>3</time>
+		<maxrun>{$MAX_RUN_TIME_SECONDS}</maxrun>
+              </timer>
+            </event>
+            <action>
+              <name>0.2</name>
+              <syslog>
+                <msg>Image Download Initiated...</msg>
+              </syslog>
+            </action>
+            <action>
+              <name>0.5</name>
+              <cli>
+                <command>enable</command>
+              </cli>
+            </action>
+            <action>
+              <name>1.5</name>
+              <cli>
+                <command>config t</command>
+              </cli>
+            </action>
+            <action>
+              <name>1.6</name>
+              <cli>
+                <command>file prompt quiet</command>
+              </cli>
+            </action>
+            <action>
+              <name>1.7</name>
+              <cli>
+                <command>end</command>
+              </cli>
+            </action>
+            <action>
+              <name>2.0</name>
+              <cli>
+                <command>copy {$SDWAN_HTTP_SERVER_LOCATION}/{$SDWAN_IMAGE_NAME} bootflash:</command>
+              </cli>
+            </action>
+            <action>
+              <name>3.0</name>
+              <cli>
+                <command>config t</command>
+              </cli>
+            </action>
+            <action>
+              <name>3.2</name>
+              <cli>
+                <command>config-register 0x2102</command>
+              </cli>
+            </action>
+            <action>
+              <name>3.4</name>
+              <cli>
+                <command>boot system flash bootflash:{$SDWAN_IMAGE_NAME}</command>
+              </cli>
+            </action>
+            <action>
+              <name>4.0</name>
+              <cli>
+                <command>no file prompt quiet</command>
+              </cli>
+            </action>
+            <action>
+              <name>5.0</name>
+              <cli>
+                <command>end</command>
+              </cli>
+            </action>
+            <action>
+              <name>6.0</name>
+              <cli>
+                <command>wr mem</command>
+              </cli>
+            </action>
+            <action>
+              <name>7.0</name>
+              <syslog>
+                <msg>Image Download Complete. Bootvar Set</msg>
+              </syslog>
+            </action>
+          </applet>
+        </manager>
+      </event>
+    </config>
+  </device>
+ </devices>
+</config>
